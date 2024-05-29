@@ -15,7 +15,6 @@ function endpoint(app, connpool) {
             return;
         }
         var data = {
-            id: req.body.id,
             nome: req.body.nome,
             versione:req.body.versione,
             data_rilascio:req.body.data_rilascio,
@@ -24,8 +23,8 @@ function endpoint(app, connpool) {
             note:req.body_note,
         }
 
-        var sql = 'INSERT INTO sistemi_operativi (id,nome,versione,data_rilascio,sviluppatore,tipo,note) VALUES (?,?)'
-        var params = [data.description, data.status]
+        var sql = 'INSERT INTO sistemi_operativi (nome,versione,data_rilascio,sviluppatore,tipo,note) VALUES (?,?,?,?,?,?)'
+        var params = [data.nome, data.versione,data.data_rilascio,data.sviluppatore,data.tipo,data.note]
         connpool.query(sql, params, (error, results) => {
             if (error) {
                 res.status(400).json({ "error": error.message })
@@ -60,7 +59,7 @@ function endpoint(app, connpool) {
 
 
     app.get("/api/sistemi_operativi/:id", (req, res) => {
-        var sql = "select * from sistemi_operativi where sistemi_operativi_id = ?"
+        var sql = "select * from sistemi_operativi where id = ?"
         var params = [req.params.id]
         connpool.query(sql, params, (err, rows) => {
             if (err) {
@@ -109,7 +108,7 @@ function endpoint(app, connpool) {
 
     app.delete("/api/sistemi_operativi/:id", (req, res) => {
         connpool.execute(
-            'DELETE FROM task WHERE sistemi_operativi_id = ?',
+            'DELETE FROM sistemi_operativi WHERE id = ?',
             [req.params.id],
             function (err, result) {
                 if (err){
